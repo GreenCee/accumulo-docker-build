@@ -35,6 +35,4 @@ docker run -it \
   -w "/home/${USER_NAME}/accumulo-src" \
   -v "${HOME}/.m2:/home/${USER_NAME}/.m2" \
   -u "${USER_ID}" \
-  --cpus=4 \
-  --memory=4G \
   "accumulo-build-${USER_ID}" bash
