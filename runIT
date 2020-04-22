@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mvn -Dit.test="$1*" -Dtest=94w5up8qtweh -PskipQA -DskipITs=false -DskipTests=false -DfailIfNoTests=false verify
