@@ -31,8 +31,8 @@ ENV HOME /home/${USER_NAME}
 UserSpecificDocker
 
 docker run -it \
-  -v "${ACCUMULO_SRC}:/home/${USER_NAME}/accumulo-src" \
+  -v "${ACCUMULO_SRC}:/home/${USER_NAME}/accumulo-src:cached" \
   -w "/home/${USER_NAME}/accumulo-src" \
-  -v "${HOME}/.m2:/home/${USER_NAME}/.m2" \
+  -v "${HOME}/.m2:/home/${USER_NAME}/.m2:cached" \
   -u "${USER_ID}" \
   "accumulo-build-${USER_ID}" bash
