@@ -7,6 +7,7 @@ fi
 
 ACCUMULO_SRC=$1
 
+# Build a general Docker image for building Accumulo
 docker build -t accumulo-build .
 
 USER_NAME=${SUDO_USER:=$USER}
@@ -20,6 +21,11 @@ if [ "$(uname -s)" = "Linux" ]; then
   GROUP_ID=$(id -g "${USER_NAME}")
 fi
 
+# By default everything in a Docker container runs as root.  The following
+# builds a specific image that will run with the same username and userid in
+# the container as your user outside the container.  This is done so that when
+# you map your Accumulo source dir into the container and it writes out class
+# and tar.gz files those will have the correct user id.
 docker build -t "accumulo-build-${USER_ID}" - <<UserSpecificDocker
 FROM accumulo-build
 RUN rm -f /var/log/faillog /var/log/lastlog
@@ -30,6 +36,9 @@ RUN echo "${USER_NAME} ALL=NOPASSWD: ALL" > "/etc/sudoers.d/accumulo-build-${USE
 ENV HOME /home/${USER_NAME}
 UserSpecificDocker
 
+# Run a docker container that has your Accumulo source and Maven repo mapped
+# into the container.  These dirs are mapped into the container using cached,
+# which may cause writes to be slightly delayed but it improves performance.
 docker run -it \
   -v "${ACCUMULO_SRC}:/home/${USER_NAME}/accumulo-src:cached" \
   -w "/home/${USER_NAME}/accumulo-src" \
